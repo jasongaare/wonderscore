@@ -1,0 +1,3 @@
+rootProject.name = 'WonderScore'
+
+include ':app'
