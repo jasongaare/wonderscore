@@ -1,7 +1,7 @@
 import React, { Component } from "react";
 import { Animated, Dimensions, Easing, StyleSheet, View } from "react-native";
-import Scorecard from "./Scorecard";
-import ScienceCalculator from "./ScienceCalc";
+import Scorecard from "./screens/Scorecard";
+import ScienceCalculator from "./screens/ScienceCalc";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 
@@ -10,8 +10,8 @@ class App extends Component {
 		super();
 
 		this.state = {
-			// calculatorOffset: new Animated.Value(SCREEN_HEIGHT)
-			calculatorOffset: new Animated.Value(0)
+			calculatorOffset: new Animated.Value(SCREEN_HEIGHT)
+			// calculatorOffset: new Animated.Value(0)
 		};
 	}
 

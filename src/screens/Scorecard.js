@@ -3,6 +3,7 @@ import PropTypes from "prop-types";
 import {
 	Dimensions,
 	findNodeHandle,
+	Image,
 	Keyboard,
 	ScrollView,
 	StyleSheet,
@@ -12,7 +13,16 @@ import {
 	View
 } from "react-native";
 import isEqual from "lodash.isequal";
-import { columns, columnColors, summableColumns } from "./columns";
+import { columns, columnColors, summableColumns } from "../columns";
+import {
+	blueCard,
+	coin,
+	greenCard,
+	purpleCard,
+	shield,
+	wonder,
+	yellowCard
+} from "../images";
 
 const { height: SCREEN_HEIGHT } = Dimensions.get("window");
 const CONTAINER_PADDING = 16;
@@ -198,6 +208,26 @@ class Scorecard extends Component {
 	};
 
 	renderScorecardHeader = () => {
+		const renderIcon = iconName => (
+			<View
+				style={{
+					flex: 1,
+					borderColor: "black",
+					borderWidth: 1,
+					alignItems: "center",
+					justifyContent: "center"
+				}}
+			>
+				<Image
+					style={{
+						height: (ROW_HEIGHT / 4) * 3,
+						resizeMode: "contain"
+					}}
+					source={iconName}
+				/>
+			</View>
+		);
+
 		return (
 			<View
 				style={{
@@ -209,13 +239,13 @@ class Scorecard extends Component {
 				}}
 			>
 				<Text style={{ ...baseHeaderTextStyle, flex: 3 }}>Player Name</Text>
-				<Text style={{ ...baseHeaderTextStyle }}>A</Text>
-				<Text style={{ ...baseHeaderTextStyle }}>A</Text>
-				<Text style={{ ...baseHeaderTextStyle }}>A</Text>
-				<Text style={{ ...baseHeaderTextStyle }}>A</Text>
-				<Text style={{ ...baseHeaderTextStyle }}>A</Text>
-				<Text style={{ ...baseHeaderTextStyle }}>A</Text>
-				<Text style={{ ...baseHeaderTextStyle }}>A</Text>
+				{renderIcon(shield)}
+				{renderIcon(coin)}
+				{renderIcon(wonder)}
+				{renderIcon(blueCard)}
+				{renderIcon(yellowCard)}
+				{renderIcon(purpleCard)}
+				{renderIcon(greenCard)}
 				<Text style={{ ...baseHeaderTextStyle }}>Score</Text>
 			</View>
 		);
