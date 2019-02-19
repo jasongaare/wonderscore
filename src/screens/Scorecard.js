@@ -155,10 +155,12 @@ class Scorecard extends Component {
   createRowForPlayer = (num) => {
     const rowInputs = [];
     const { inputValues, inputRefs } = this.state;
+    const { showCalculator } = this.props;
 
     columns.forEach((column, index) => {
       const key = `p${num}-${column}`;
       const isName = column === "name";
+      const isScience = column === "science";
       const isTotal = column === "totalpoints";
 
       // handle special case for totalpoints column value
@@ -171,6 +173,15 @@ class Scorecard extends Component {
           inputValue = "";
         }
       }
+
+      const playerNameForRow = inputValues[`p${num}-name`];
+      const setNewValue = (value) => {
+        const newValue = {};
+        newValue[key] = value;
+        this.setState({
+          inputValues: Object.assign({}, inputValues, newValue)
+        });
+      };
 
       rowInputs.push(
         <TextInput
@@ -186,14 +197,21 @@ class Scorecard extends Component {
             flex: isName ? 3 : 1
           }}
           value={inputValue}
-          onChangeText={(text) => {
-            const newValue = {};
-            newValue[key] = text;
-            this.setState({
-              inputValues: Object.assign({}, inputValues, newValue)
-            });
+          onChangeText={(text) => setNewValue(text)}
+          onFocus={() => {
+            if (isScience) {
+              Keyboard.dismiss();
+              showCalculator({
+                callback: (value) => setNewValue(value),
+                playerName:
+                  playerNameForRow && playerNameForRow.length
+                    ? playerNameForRow
+                    : `Player ${num}`
+              });
+            } else {
+              this.scrollToFocusedInput(inputRefs[key].current);
+            }
           }}
-          onFocus={() => this.scrollToFocusedInput(inputRefs[key].current)}
           onSubmitEditing={() => {
             const nextIndex = index + 1;
             if (nextIndex < columns.length - 1) {

@@ -16,37 +16,49 @@ class App extends Component {
     super();
 
     this.state = {
-      calculatorOffset: new Animated.Value(SCREEN_HEIGHT)
-      // calculatorOffset: new Animated.Value(0)
+      calculatorOffset: new Animated.Value(SCREEN_HEIGHT),
+      playerNameForCalc: "Player",
+      onHideCallback: () => {}
     };
   }
 
-  showScienceCalculator = () => {
-    const { calculatorOffset } = this.state;
-    Animated.timing(calculatorOffset, {
-      toValue: 0,
-      duration: 421,
-      easing: Easing.out(Easing.quad)
-    }).start();
+  showScienceCalculator = ({ playerName, callback }) => {
+    this.setState(
+      {
+        playerNameForCalc: playerName,
+        onHideCallback: callback
+      },
+      () => {
+        const { calculatorOffset } = this.state;
+        Animated.timing(calculatorOffset, {
+          toValue: 0,
+          duration: 321,
+          easing: Easing.out(Easing.quad)
+        }).start();
+      }
+    );
   };
 
-  hideScienceCalculator = () => {
-    const { calculatorOffset } = this.state;
+  hideScienceCalculator = (value) => {
+    const { calculatorOffset, onHideCallback } = this.state;
+    onHideCallback(value);
+
     Animated.timing(calculatorOffset, {
       toValue: SCREEN_HEIGHT,
-      duration: 421,
+      duration: 321,
       easing: Easing.out(Easing.quad)
     }).start();
   };
 
   render() {
-    const { calculatorOffset } = this.state;
+    const { calculatorOffset, playerNameForCalc } = this.state;
 
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "khaki" }}>
         <Scorecard showCalculator={this.showScienceCalculator} />
 
         <Animated.View
+          pointerEvents="none"
           style={{
             ...StyleSheet.absoluteFillObject,
             backgroundColor: "rgba(0,0,0,0.25)",
@@ -66,7 +78,10 @@ class App extends Component {
             })
           }}
         >
-          <ScienceCalculator hideSelf={this.hideScienceCalculator} />
+          <ScienceCalculator
+            playerName={playerNameForCalc}
+            hideSelf={this.hideScienceCalculator}
+          />
         </Animated.View>
       </SafeAreaView>
     );

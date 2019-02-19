@@ -120,13 +120,13 @@ class Scorecard extends Component {
   };
 
   render() {
-    const { hideSelf } = this.props;
+    const { hideSelf, playerName } = this.props;
 
     return (
       <View style={styles.outerContainer}>
         <View style={styles.container}>
           <Text style={styles.headerText}>
-            {"Calculate Science Score for PLAYER NAME"}
+            {`Calculate Science Score for ${playerName}`}
           </Text>
           {this.renderSliderRow(CARD_TYPES.COG)}
           {this.renderSliderRow(CARD_TYPES.TABLET)}
@@ -180,12 +180,12 @@ class Scorecard extends Component {
                   alignItems: "center",
                   justifyContent: "center"
                 }}
-                onPress={() => hideSelf()}
+                onPress={() => hideSelf(`${this.getCurrentScore()}`)}
               >
                 <Text
                   style={{ color: "green", fontSize: 16, fontWeight: "bold" }}
                 >
-                  {`Save PLAYER's Score`}
+                  {`Save Score for ${playerName}`}
                 </Text>
               </TouchableOpacity>
             </View>
@@ -253,7 +253,8 @@ const styles = StyleSheet.create({
 });
 
 Scorecard.propTypes = {
-  hideSelf: PropTypes.func.isRequired
+  hideSelf: PropTypes.func.isRequired,
+  playerName: PropTypes.string.isRequired
 };
 
 export default Scorecard;
