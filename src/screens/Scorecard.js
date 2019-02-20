@@ -1,6 +1,7 @@
 import React, { Component } from "react";
 import PropTypes from "prop-types";
 import {
+  Alert,
   Dimensions,
   findNodeHandle,
   Image,
@@ -187,7 +188,7 @@ class Scorecard extends Component {
         <TextInput
           key={key}
           ref={inputRefs[key]}
-          editable={!isTotal}
+          editable={!(isTotal || isScience)}
           keyboardType={isName ? "default" : "numbers-and-punctuation"}
           keyboardShouldPersistTaps="always"
           autoCorrect={false}
@@ -198,9 +199,8 @@ class Scorecard extends Component {
           }}
           value={inputValue}
           onChangeText={(text) => setNewValue(text)}
-          onFocus={() => {
+          onTouchStart={() => {
             if (isScience) {
-              Keyboard.dismiss();
               showCalculator({
                 callback: (value) => setNewValue(value),
                 playerName:
@@ -208,9 +208,10 @@ class Scorecard extends Component {
                     ? playerNameForRow
                     : `Player ${num}`
               });
-            } else {
-              this.scrollToFocusedInput(inputRefs[key].current);
             }
+          }}
+          onFocus={() => {
+            this.scrollToFocusedInput(inputRefs[key].current);
           }}
           onSubmitEditing={() => {
             const nextIndex = index + 1;
@@ -288,7 +289,22 @@ class Scorecard extends Component {
             color: "khaki",
             textAlign: "left"
           }}
-          onPress={() => this.clearValues()}
+          onPress={() =>
+            Alert.alert("Clear All Scores?", "", [
+              {
+                text: "Cancel",
+                onPress: () => {},
+                style: "cancel"
+              },
+              {
+                text: "Clear",
+                onPress: () => {
+                  this.clearValues();
+                },
+                style: "destructive"
+              }
+            ])
+          }
         >
           {"Clear All Scores"}
         </Text>

@@ -176,11 +176,20 @@ class Scorecard extends Component {
                   padding: 12,
                   backgroundColor: "white",
                   borderRadius: 4,
-                  // width: "50%",
                   alignItems: "center",
                   justifyContent: "center"
                 }}
-                onPress={() => hideSelf(`${this.getCurrentScore()}`)}
+                onPress={() => {
+                  hideSelf(`${this.getCurrentScore()}`);
+
+                  setTimeout(() => {
+                    this.setState({
+                      cogCardCount: 0,
+                      tabletCardCount: 0,
+                      compassCardCount: 0
+                    });
+                  }, 321);
+                }}
               >
                 <Text
                   style={{ color: "green", fontSize: 16, fontWeight: "bold" }}
