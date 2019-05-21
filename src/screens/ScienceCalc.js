@@ -17,14 +17,32 @@ const CARD_TYPES = {
   COMPASS: 2
 };
 
-class Scorecard extends Component {
-  constructor(props) {
-    super(props);
+class ScienceCalc extends Component {
+  state = {
+    cogCardCount: 0,
+    tabletCardCount: 0,
+    compassCardCount: 0,
+    isShowing: false // eslint-disable-line react/no-unused-state
+  };
 
-    this.state = {
-      cogCardCount: 0,
-      tabletCardCount: 0,
-      compassCardCount: 0
+  static getDerivedStateFromProps(props, state) {
+    const { isShowing, calculatorValues } = props;
+
+    if (isShowing === state.isShowing) {
+      return null;
+    }
+
+    const {
+      cogCardCount,
+      tabletCardCount,
+      compassCardCount
+    } = calculatorValues;
+
+    return {
+      cogCardCount: cogCardCount || state.cogCardCount,
+      tabletCardCount: tabletCardCount || state.tabletCardCount,
+      compassCardCount: compassCardCount || state.compassCardCount,
+      isShowing
     };
   }
 
@@ -180,7 +198,18 @@ class Scorecard extends Component {
                   justifyContent: "center"
                 }}
                 onPress={() => {
-                  hideSelf(`${this.getCurrentScore()}`);
+                  const {
+                    cogCardCount,
+                    tabletCardCount,
+                    compassCardCount
+                  } = this.state;
+
+                  hideSelf({
+                    cogCardCount,
+                    tabletCardCount,
+                    compassCardCount,
+                    score: `${this.getCurrentScore()}`
+                  });
 
                   setTimeout(() => {
                     this.setState({
@@ -215,6 +244,7 @@ const styles = StyleSheet.create({
     backgroundColor: "khaki",
     padding: 16,
     margin: 32,
+    marginHorizontal: 64,
     borderRadius: 12
   },
   headerText: {
@@ -261,9 +291,10 @@ const styles = StyleSheet.create({
   }
 });
 
-Scorecard.propTypes = {
+ScienceCalc.propTypes = {
   hideSelf: PropTypes.func.isRequired,
-  playerName: PropTypes.string.isRequired
+  playerName: PropTypes.string.isRequired,
+  calculatorValues: PropTypes.oneOfType([PropTypes.object, PropTypes.string]) // eslint-disable-line
 };
 
-export default Scorecard;
+export default ScienceCalc;

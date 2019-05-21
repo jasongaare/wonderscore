@@ -18,21 +18,25 @@ class App extends Component {
     this.state = {
       calculatorOffset: new Animated.Value(SCREEN_HEIGHT),
       playerNameForCalc: "Player",
-      onHideCallback: () => {}
+      onHideCallback: () => {},
+      calculatorValues: "",
+      calcShowing: false
     };
   }
 
-  showScienceCalculator = ({ playerName, callback }) => {
+  showScienceCalculator = ({ playerName, callback, values }) => {
     this.setState(
       {
         playerNameForCalc: playerName,
-        onHideCallback: callback
+        onHideCallback: callback,
+        calculatorValues: values,
+        calcShowing: true
       },
       () => {
         const { calculatorOffset } = this.state;
         Animated.timing(calculatorOffset, {
           toValue: 0,
-          duration: 321,
+          duration: 222,
           easing: Easing.out(Easing.quad)
         }).start();
       }
@@ -43,15 +47,25 @@ class App extends Component {
     const { calculatorOffset, onHideCallback } = this.state;
     onHideCallback(value);
 
+    this.setState({
+      calculatorValues: "",
+      calcShowing: false
+    });
+
     Animated.timing(calculatorOffset, {
       toValue: SCREEN_HEIGHT,
-      duration: 321,
+      duration: 222,
       easing: Easing.out(Easing.quad)
     }).start();
   };
 
   render() {
-    const { calculatorOffset, playerNameForCalc } = this.state;
+    const {
+      calculatorOffset,
+      playerNameForCalc,
+      calculatorValues,
+      calcShowing
+    } = this.state;
 
     return (
       <SafeAreaView style={{ flex: 1, backgroundColor: "khaki" }}>
@@ -81,6 +95,8 @@ class App extends Component {
           <ScienceCalculator
             playerName={playerNameForCalc}
             hideSelf={this.hideScienceCalculator}
+            calculatorValues={calculatorValues}
+            isShowing={calcShowing}
           />
         </Animated.View>
       </SafeAreaView>

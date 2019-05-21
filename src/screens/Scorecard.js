@@ -175,6 +175,10 @@ class Scorecard extends Component {
         }
       }
 
+      if (isScience) {
+        inputValue = inputValue ? inputValue.score : "";
+      }
+
       const playerNameForRow = inputValues[`p${num}-name`];
       const setNewValue = (value) => {
         const newValue = {};
@@ -206,7 +210,8 @@ class Scorecard extends Component {
                 playerName:
                   playerNameForRow && playerNameForRow.length
                     ? playerNameForRow
-                    : `Player ${num}`
+                    : `Player ${num}`,
+                values: inputValues[key]
               });
             }
           }}
