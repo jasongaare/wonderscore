@@ -111,7 +111,7 @@ class ScienceCalc extends Component {
     return (
       <View style={styles.sliderRow}>
         <View style={styles.numberOfTextContainer}>
-          <Text style={{ fontSize: 18, color: "black" }}>Number of</Text>
+          {/* <Text style={{ fontSize: 18, color: "black" }}>Number of</Text> */}
           <Image
             style={{
               height: 44,
@@ -243,8 +243,8 @@ const styles = StyleSheet.create({
     alignItems: "center",
     backgroundColor: "khaki",
     padding: 16,
-    margin: 32,
-    marginHorizontal: 64,
+    margin: "1%",
+    marginHorizontal: "2%",
     borderRadius: 12
   },
   headerText: {

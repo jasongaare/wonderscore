@@ -14,6 +14,7 @@ import {
   View
 } from "react-native";
 import isEqual from "lodash.isequal";
+
 import { columns, columnColors, summableColumns } from "../columns";
 import {
   blueCard,
@@ -202,9 +203,11 @@ class Scorecard extends Component {
             flex: isName ? 3 : 1
           }}
           value={inputValue}
+          returnKeyType="next"
           onChangeText={(text) => setNewValue(text)}
           onTouchStart={() => {
             if (isScience) {
+              Keyboard.dismiss();
               showCalculator({
                 callback: (value) => setNewValue(value),
                 playerName:
@@ -219,9 +222,22 @@ class Scorecard extends Component {
             this.scrollToFocusedInput(inputRefs[key].current);
           }}
           onSubmitEditing={() => {
-            const nextIndex = index + 1;
-            if (nextIndex < columns.length - 1) {
-              inputRefs[`p${num}-${columns[nextIndex]}`].current.focus();
+            // if name, move to next name field (down row)
+            // else move to next column while scoring
+            if (isName) {
+              const nextRow = num + 1;
+              if (nextRow <= 7) {
+                inputRefs[`p${nextRow}-${columns[0]}`].current.focus();
+              } else {
+                inputRefs[key].current.blur();
+              }
+            } else {
+              const nextIndex = index + 1;
+              if (nextIndex < columns.length - 1) {
+                inputRefs[`p${num}-${columns[nextIndex]}`].current.focus();
+              } else {
+                inputRefs[key].current.blur();
+              }
             }
           }}
         />
