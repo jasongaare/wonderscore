@@ -154,10 +154,35 @@ class Scorecard extends Component {
     });
   };
 
+  openScienceCalcForPlayer = (num) => {
+    const { inputValues } = this.state;
+    const { showCalculator } = this.props;
+
+    const key = `p${num}-science`;
+    const playerNameForRow = inputValues[`p${num}-name`];
+
+    const setNewValue = (value) => {
+      const newValue = {};
+      newValue[key] = value;
+      this.setState({
+        inputValues: Object.assign({}, inputValues, newValue)
+      });
+    };
+
+    Keyboard.dismiss();
+    showCalculator({
+      callback: (value) => setNewValue(value),
+      playerName:
+        playerNameForRow && playerNameForRow.length
+          ? playerNameForRow
+          : `Player ${num}`,
+      values: inputValues[key]
+    });
+  };
+
   createRowForPlayer = (num) => {
     const rowInputs = [];
     const { inputValues, inputRefs } = this.state;
-    const { showCalculator } = this.props;
 
     columns.forEach((column, index) => {
       const key = `p${num}-${column}`;
@@ -180,7 +205,6 @@ class Scorecard extends Component {
         inputValue = inputValue ? inputValue.score : "";
       }
 
-      const playerNameForRow = inputValues[`p${num}-name`];
       const setNewValue = (value) => {
         const newValue = {};
         newValue[key] = value;
@@ -207,15 +231,7 @@ class Scorecard extends Component {
           onChangeText={(text) => setNewValue(text)}
           onTouchStart={() => {
             if (isScience) {
-              Keyboard.dismiss();
-              showCalculator({
-                callback: (value) => setNewValue(value),
-                playerName:
-                  playerNameForRow && playerNameForRow.length
-                    ? playerNameForRow
-                    : `Player ${num}`,
-                values: inputValues[key]
-              });
+              this.openScienceCalcForPlayer(num);
             }
           }}
           onFocus={() => {
@@ -234,7 +250,11 @@ class Scorecard extends Component {
             } else {
               const nextIndex = index + 1;
               if (nextIndex < columns.length - 1) {
-                inputRefs[`p${num}-${columns[nextIndex]}`].current.focus();
+                if (columns[nextIndex] === "science") {
+                  this.openScienceCalcForPlayer(num);
+                } else {
+                  inputRefs[`p${num}-${columns[nextIndex]}`].current.focus();
+                }
               } else {
                 inputRefs[key].current.blur();
               }

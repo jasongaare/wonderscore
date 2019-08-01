@@ -29,8 +29,7 @@ class App extends Component {
       {
         playerNameForCalc: playerName,
         onHideCallback: callback,
-        calculatorValues: values,
-        calcShowing: true
+        calculatorValues: values
       },
       () => {
         const { calculatorOffset } = this.state;
@@ -38,25 +37,33 @@ class App extends Component {
           toValue: 0,
           duration: 222,
           easing: Easing.out(Easing.quad)
-        }).start();
+        }).start(() => {
+          this.setState({ calcShowing: true });
+        });
       }
     );
   };
 
   hideScienceCalculator = (value) => {
     const { calculatorOffset, onHideCallback } = this.state;
-    onHideCallback(value);
 
-    this.setState({
-      calculatorValues: "",
-      calcShowing: false
-    });
+    if (value) {
+      onHideCallback(value);
+    }
 
-    Animated.timing(calculatorOffset, {
-      toValue: SCREEN_HEIGHT,
-      duration: 222,
-      easing: Easing.out(Easing.quad)
-    }).start();
+    this.setState(
+      {
+        calculatorValues: "",
+        calcShowing: false
+      },
+      () => {
+        Animated.timing(calculatorOffset, {
+          toValue: SCREEN_HEIGHT,
+          duration: 222,
+          easing: Easing.out(Easing.quad)
+        }).start();
+      }
+    );
   };
 
   render() {

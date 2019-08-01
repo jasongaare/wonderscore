@@ -6,10 +6,13 @@ import {
   View,
   Text,
   Image,
-  TouchableOpacity
+  TouchableOpacity,
+  Dimensions,
+  SafeAreaView
 } from "react-native";
 import { scienceCog, scienceCompass, scienceTablet } from "../images";
 
+const SCREEN_WIDTH = Dimensions.get("window").width;
 const MAX_SLIDER_VALUE = 6;
 const CARD_TYPES = {
   COG: 0,
@@ -111,7 +114,7 @@ class ScienceCalc extends Component {
     return (
       <View style={styles.sliderRow}>
         <View style={styles.numberOfTextContainer}>
-          {/* <Text style={{ fontSize: 18, color: "black" }}>Number of</Text> */}
+          <Text style={{ fontSize: 18, color: "black" }}>Number of</Text>
           <Image
             style={{
               height: 44,
@@ -119,7 +122,7 @@ class ScienceCalc extends Component {
             }}
             source={image}
           />
-          <Text style={{ fontSize: 18, color: "black" }}>cards:</Text>
+          {/* <Text style={{ fontSize: 18, color: "black" }}>cards:</Text> */}
         </View>
         <View style={styles.countView}>
           <Text style={styles.countText}>{sliderValue}</Text>
@@ -139,13 +142,23 @@ class ScienceCalc extends Component {
 
   render() {
     const { hideSelf, playerName } = this.props;
+    const { isShowing } = this.state;
+
+    if (!isShowing) {
+      return (
+        <SafeAreaView style={styles.outerContainer}>
+          <View style={styles.container} />
+        </SafeAreaView>
+      );
+    }
 
     return (
-      <View style={styles.outerContainer}>
+      <SafeAreaView style={styles.outerContainer}>
         <View style={styles.container}>
-          <Text style={styles.headerText}>
-            {`Calculate Science Score for ${playerName}`}
-          </Text>
+          <View style={styles.titleContainer}>
+            <Text style={styles.headerText}>Calculate science score for</Text>
+            <Text style={styles.playerName}>{`${playerName}`}</Text>
+          </View>
           {this.renderSliderRow(CARD_TYPES.COG)}
           {this.renderSliderRow(CARD_TYPES.TABLET)}
           {this.renderSliderRow(CARD_TYPES.COMPASS)}
@@ -155,11 +168,11 @@ class ScienceCalc extends Component {
               width: "100%",
               flexDirection: "row",
               alignItems: "center",
-              paddingRight: "10%"
+              justifyContent: "center"
             }}
           >
             <View style={styles.numberOfTextContainer}>
-              <Text style={styles.scoreText}>Total score:</Text>
+              <Text style={styles.scoreText}>Total:</Text>
             </View>
             <View
               style={[
@@ -192,10 +205,11 @@ class ScienceCalc extends Component {
               <TouchableOpacity
                 style={{
                   padding: 12,
-                  backgroundColor: "white",
+                  backgroundColor: "green",
                   borderRadius: 4,
                   alignItems: "center",
-                  justifyContent: "center"
+                  justifyContent: "center",
+                  alignSelf: "flex-end"
                 }}
                 onPress={() => {
                   const {
@@ -221,15 +235,15 @@ class ScienceCalc extends Component {
                 }}
               >
                 <Text
-                  style={{ color: "green", fontSize: 16, fontWeight: "bold" }}
+                  style={{ color: "white", fontSize: 16, fontWeight: "bold" }}
                 >
-                  {`Save Score for ${playerName}`}
+                  Done
                 </Text>
               </TouchableOpacity>
             </View>
           </View>
         </View>
-      </View>
+      </SafeAreaView>
     );
   }
 }
@@ -241,6 +255,7 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     alignItems: "center",
+    justifyContent: "space-between",
     backgroundColor: "khaki",
     padding: 16,
     margin: "1%",
@@ -249,21 +264,28 @@ const styles = StyleSheet.create({
   },
   headerText: {
     color: "green",
+    fontSize: 20,
+    fontStyle: "italic",
+    textAlign: "center"
+  },
+  playerName: {
+    color: "black",
     fontSize: 24,
-    fontWeight: "bold"
+    fontWeight: "bold",
+    textAlign: "center"
   },
   sliderRow: {
     flexDirection: "row",
     alignItems: "center",
-    marginVertical: 8,
-    width: "100%",
-    paddingRight: "10%"
+    justifyContent: "center",
+    width: "100%"
   },
   numberOfTextContainer: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "flex-end",
-    flex: 1
+    width: SCREEN_WIDTH / 4,
+    maxWidth: 210
   },
   countView: {
     margin: 8,
@@ -281,7 +303,8 @@ const styles = StyleSheet.create({
     lineHeight: 32
   },
   rowRightContainer: {
-    width: "45%",
+    width: SCREEN_WIDTH / 2.5,
+    maxWidth: 280,
     marginLeft: 16
   },
   scoreText: {
