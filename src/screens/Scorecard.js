@@ -141,6 +141,11 @@ class Scorecard extends Component {
       let points = 0;
       summableColumns.forEach((column) => {
         let columnPoints = parseInt(inputValues[`p${i}-${column}`]);
+
+        if (column === "science") {
+          columnPoints = parseInt(inputValues[`p${i}-${column}`].score);
+        }
+
         if (!isNaN(columnPoints)) {
           points += columnPoints;
         }

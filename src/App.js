@@ -16,7 +16,7 @@ class App extends Component {
     super();
 
     this.state = {
-      calculatorOffset: new Animated.Value(SCREEN_HEIGHT),
+      calculatorOpacity: new Animated.Value(0),
       playerNameForCalc: "Player",
       onHideCallback: () => {},
       calculatorValues: "",
@@ -32,11 +32,11 @@ class App extends Component {
         calculatorValues: values
       },
       () => {
-        const { calculatorOffset } = this.state;
-        Animated.timing(calculatorOffset, {
-          toValue: 0,
+        const { calculatorOpacity } = this.state;
+        Animated.timing(calculatorOpacity, {
+          toValue: 1,
           duration: 222,
-          easing: Easing.out(Easing.quad)
+          useNativeDriver: true
         }).start(() => {
           this.setState({ calcShowing: true });
         });
@@ -45,7 +45,7 @@ class App extends Component {
   };
 
   hideScienceCalculator = (value) => {
-    const { calculatorOffset, onHideCallback } = this.state;
+    const { calculatorOpacity, onHideCallback } = this.state;
 
     if (value) {
       onHideCallback(value);
@@ -57,10 +57,10 @@ class App extends Component {
         calcShowing: false
       },
       () => {
-        Animated.timing(calculatorOffset, {
-          toValue: SCREEN_HEIGHT,
+        Animated.timing(calculatorOpacity, {
+          toValue: 0,
           duration: 222,
-          easing: Easing.out(Easing.quad)
+          useNativeDriver: true
         }).start();
       }
     );
@@ -68,7 +68,7 @@ class App extends Component {
 
   render() {
     const {
-      calculatorOffset,
+      calculatorOpacity,
       playerNameForCalc,
       calculatorValues,
       calcShowing
@@ -83,19 +83,22 @@ class App extends Component {
           style={{
             ...StyleSheet.absoluteFillObject,
             backgroundColor: "rgba(0,0,0,0.25)",
-            opacity: calculatorOffset.interpolate({
-              inputRange: [0, 1],
-              outputRange: [1, 0]
+            opacity: calculatorOpacity.interpolate({
+              inputRange: [0, 0.75],
+              outputRange: [0, 1],
+              extrapolate: "clamp"
             })
           }}
         />
 
         <Animated.View
+          pointerEvents={calcShowing ? "auto" : "none"}
           style={{
             ...StyleSheet.absoluteFillObject,
-            top: calculatorOffset.interpolate({
-              inputRange: [0, 1],
-              outputRange: [0, 1]
+            opacity: calculatorOpacity.interpolate({
+              inputRange: [0.25, 1],
+              outputRange: [0, 1],
+              extrapolate: "clamp"
             })
           }}
         >
