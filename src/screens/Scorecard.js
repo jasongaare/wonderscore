@@ -67,7 +67,7 @@ class Scorecard extends Component {
 
   componentDidMount() {
     this.initializeRefs();
-    this.clearValues();
+    this.clearEntireScorecard();
   }
 
   componentDidUpdate(prevProps, prevState) {
@@ -117,19 +117,53 @@ class Scorecard extends Component {
     });
   };
 
+  checkClearAll = () => {
+    Alert.alert(
+      "Clear Player Names?",
+      "Would you like to keep or clear the player names?",
+      [
+        {
+          text: "Keep",
+          onPress: this.clearValues
+        },
+        {
+          text: "Clear",
+          onPress: this.clearEntireScorecard,
+          style: "destructive"
+        }
+      ]
+    );
+  };
+
   clearValues = () => {
     const { inputValues } = this.state;
-    const nexInputValues = {};
+    const nextInputValues = {};
 
     for (let i = 1; i <= NUM_OF_PLAYERS; i++) {
       summableColumns.forEach((column) => {
         const key = `p${i}-${column}`;
-        nexInputValues[key] = "";
+        nextInputValues[key] = "";
       });
     }
 
     this.setState({
-      inputValues: Object.assign({}, inputValues, nexInputValues)
+      inputValues: Object.assign({}, inputValues, nextInputValues)
+    });
+  };
+
+  clearEntireScorecard = () => {
+    const { inputValues } = this.state;
+    const nextInputValues = {};
+
+    for (let i = 0; i <= NUM_OF_PLAYERS; i++) {
+      columns.forEach((column) => {
+        const key = `p${i}-${column}`;
+        nextInputValues[key] = "";
+      });
+    }
+
+    this.setState({
+      inputValues: Object.assign({}, inputValues, nextInputValues)
     });
   };
 
@@ -194,6 +228,7 @@ class Scorecard extends Component {
       const isName = column === "name";
       const isScience = column === "science";
       const isTotal = column === "totalpoints";
+      const useWhiteCursor = column === "civilian" || column === "guilds";
 
       // handle special case for totalpoints column value
       let inputValue = inputValues[key];
@@ -239,6 +274,7 @@ class Scorecard extends Component {
               this.openScienceCalcForPlayer(num);
             }
           }}
+          selectionColor={useWhiteCursor ? "white" : null}
           onFocus={() => {
             this.scrollToFocusedInput(inputRefs[key].current);
           }}
@@ -344,9 +380,7 @@ class Scorecard extends Component {
               },
               {
                 text: "Clear",
-                onPress: () => {
-                  this.clearValues();
-                },
+                onPress: this.checkClearAll,
                 style: "destructive"
               }
             ])
